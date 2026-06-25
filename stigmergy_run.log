@@ -1,0 +1,44 @@
+Current directory: /Users/twang/tcw/Stigmergy-Arrhythmia
+Loading MIT-BIH data...
+Loaded data from /Users/twang/tcw/Stigmergy-Arrhythmia/mitbih_data.xlsx
+Data shape: (12000, 180) | Reduced: (12000, 2)
+Running termite-inspired stigmergy training...
+Iter   0 | Normal pheromone: 1.3258 | Abnormal pheromone: 1.3258
+Iter  50 | Normal pheromone: 59.8155 | Abnormal pheromone: 59.8162
+Iter 100 | Normal pheromone: 105.3387 | Abnormal pheromone: 105.3400
+Iter 150 | Normal pheromone: 140.7701 | Abnormal pheromone: 140.7718
+Iter 200 | Normal pheromone: 168.3471 | Abnormal pheromone: 168.3488
+
+=== Training Metrics ===
+Accuracy: 0.964
+Precision (abnormal class): 0.714
+Recall (abnormal class): 0.437
+F1-score (abnormal class): 0.542
+Cohen's Kappa: 0.525
+AUROC: 0.814
+Confusion Matrix:
+[[7924   71]
+ [ 228  177]]
+
+=== Testing Metrics ===
+Accuracy: 0.961
+Precision (abnormal class): 0.706
+Recall (abnormal class): 0.345
+F1-score (abnormal class): 0.463
+Cohen's Kappa: 0.446
+AUROC: 0.785
+Confusion Matrix:
+[[3401   25]
+ [ 114   60]]
+
+=== Training vs Testing Summary ===
+accuracy: training=0.964, testing=0.961
+precision: training=0.714, testing=0.706
+recall: training=0.437, testing=0.345
+f1: training=0.542, testing=0.463
+kappa: training=0.525, testing=0.446
+auroc: training=0.814, testing=0.785
+Saved visualization to /Users/twang/tcw/Stigmergy-Arrhythmia/stigmergy_clustering.pdf
+Saved AUROC plot to /Users/twang/tcw/Stigmergy-Arrhythmia/stigmergy_auroc.pdf
+Saved metrics comparison plot to /Users/twang/tcw/Stigmergy-Arrhythmia/stigmergy_metrics_comparison.pdf
+Saved predictions to /Users/twang/tcw/Stigmergy-Arrhythmia/stigmergy_predictions.xlsx
