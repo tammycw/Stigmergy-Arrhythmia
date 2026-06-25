@@ -1,10 +1,10 @@
-# Stigmergy-Arrhythmia: Swarm Intelligence for ECG Beat Classification
+# Stigmergy-Arrhythmia: Swarm Intelligence for Arrhythmia Classification
 
 A bio-inspired machine learning classifier that uses **stigmergic algorithms** (termite swarm behavior) to distinguish normal from abnormal ECG heartbeats.
 
 ## Overview
 
-This project implements a novel approach to ECG classification inspired by the collective behavior of termites. Rather than using traditional supervised learning methods, we simulate a swarm of autonomous agents that communicate through pheromone deposition—a process called *stigmergy*. Over multiple iterations, the agents self-organize to create decision boundaries that separate normal and abnormal cardiac beats in a low-dimensional feature space.
+This project implements a novel approach to arrhythmia classification inspired by the collective behavior of termites. Rather than using traditional supervised learning methods, we simulate a swarm of autonomous agents that communicate through pheromone deposition—a process called *stigmergy*. Over multiple iterations, the agents self-organize to create decision boundaries that separate normal and abnormal cardiac beats in a low-dimensional feature space.
 
 ## Theory: Stigmergy & Swarm Intelligence
 
