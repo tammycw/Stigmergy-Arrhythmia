@@ -10,34 +10,34 @@ Iter 150 | Normal pheromone: 140.7701 | Abnormal pheromone: 140.7718
 Iter 200 | Normal pheromone: 168.3471 | Abnormal pheromone: 168.3488
 
 === Training Metrics ===
-Accuracy: 0.964
-Precision (abnormal class): 0.714
-Recall (abnormal class): 0.437
-F1-score (abnormal class): 0.542
-Cohen's Kappa: 0.525
-AUROC: 0.814
+Accuracy: 0.965
+Precision (abnormal class): 0.706
+Recall (abnormal class): 0.469
+F1-score (abnormal class): 0.564
+Cohen's Kappa: 0.546
+AUROC: 0.821
 Confusion Matrix:
-[[7924   71]
- [ 228  177]]
+[[7916   79]
+ [ 215  190]]
 
 === Testing Metrics ===
 Accuracy: 0.961
-Precision (abnormal class): 0.706
-Recall (abnormal class): 0.345
-F1-score (abnormal class): 0.463
-Cohen's Kappa: 0.446
-AUROC: 0.785
+Precision (abnormal class): 0.678
+Recall (abnormal class): 0.351
+F1-score (abnormal class): 0.462
+Cohen's Kappa: 0.444
+AUROC: 0.806
 Confusion Matrix:
-[[3401   25]
- [ 114   60]]
+[[3397   29]
+ [ 113   61]]
 
 === Training vs Testing Summary ===
-accuracy: training=0.964, testing=0.961
-precision: training=0.714, testing=0.706
-recall: training=0.437, testing=0.345
-f1: training=0.542, testing=0.463
-kappa: training=0.525, testing=0.446
-auroc: training=0.814, testing=0.785
+accuracy: training=0.965, testing=0.961
+precision: training=0.706, testing=0.678
+recall: training=0.469, testing=0.351
+f1: training=0.564, testing=0.462
+kappa: training=0.546, testing=0.444
+auroc: training=0.821, testing=0.806
 Saved visualization to /Users/twang/tcw/Stigmergy-Arrhythmia/stigmergy_clustering.pdf
 Saved AUROC plot to /Users/twang/tcw/Stigmergy-Arrhythmia/stigmergy_auroc.pdf
 Saved metrics comparison plot to /Users/twang/tcw/Stigmergy-Arrhythmia/stigmergy_metrics_comparison.pdf
