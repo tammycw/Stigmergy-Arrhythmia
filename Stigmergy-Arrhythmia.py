@@ -92,6 +92,8 @@ from sklearn.decomposition import PCA
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix, cohen_kappa_score, roc_auc_score, roc_curve
 from scipy.ndimage import gaussian_filter
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation, PillowWriter
 from plotnine import ggplot, aes, geom_point, geom_line, geom_abline, geom_text, geom_col, labs, theme_minimal, theme, ggsave, scale_color_manual, scale_fill_manual, scale_x_continuous, scale_y_continuous, coord_flip
 from plotnine.themes.elements import element_blank, element_line, element_rect, element_text
 
@@ -296,7 +298,7 @@ def scale_to_grid(point, grid_size):
     return np.array([x_idx, y_idx], dtype=float)
 
 
-def train_pheromone_classifier(X_train, y_train, grid_size=60, n_iterations=220):
+def train_pheromone_classifier(X_train, y_train, grid_size=60, n_iterations=220, record_snapshots=False, snapshot_interval=20):
     pheromone_grids = np.zeros((2, grid_size, grid_size), dtype=np.float32)
     y_train = np.asarray(y_train, dtype=int)
     class_counts = np.bincount(y_train)
@@ -306,6 +308,10 @@ def train_pheromone_classifier(X_train, y_train, grid_size=60, n_iterations=220)
         TermiteAgent(scale_to_grid(point, grid_size), point, label)
         for point, label in zip(X_train, y_train)
     ]
+
+    snapshots = []
+    if record_snapshots:
+        snapshots.append((0, pheromone_grids.copy()))
 
     log_message("Running termite-inspired stigmergy training...")
     for it in range(n_iterations):
@@ -319,6 +325,9 @@ def train_pheromone_classifier(X_train, y_train, grid_size=60, n_iterations=220)
         pheromone_grids[1] = gaussian_filter(pheromone_grids[1], sigma=0.8)
         pheromone_grids *= 0.995
 
+        if record_snapshots and (it + 1) % snapshot_interval == 0:
+            snapshots.append((it + 1, pheromone_grids.copy()))
+
         if it % 50 == 0:
             log_message(f"Iter {it:3d} | Normal pheromone: {pheromone_grids[0].mean():.4f} | Abnormal pheromone: {pheromone_grids[1].mean():.4f}")
 
@@ -327,6 +336,8 @@ def train_pheromone_classifier(X_train, y_train, grid_size=60, n_iterations=220)
         if max_val > 0:
             pheromone_grids[cls] = pheromone_grids[cls] / max_val
 
+    if record_snapshots:
+        return pheromone_grids, snapshots
     return pheromone_grids
 
 
@@ -344,9 +355,61 @@ def predict_with_pheromone(X_eval, pheromone_grids, grid_size=60):
     return np.array(predicted, dtype=int), np.array(score_diffs, dtype=float)
 
 
+def save_pheromone_animation(snapshots, output_path):
+    fig, axs = plt.subplots(1, 2, figsize=(12, 5))
+    titles = ["Normal pheromone field", "Abnormal pheromone field"]
+
+    images = []
+    for idx, (title, ax) in enumerate(zip(titles, axs)):
+        ax.set_title(title)
+        ax.set_xticks([])
+        ax.set_yticks([])
+        images.append(ax.imshow(snapshots[0][1][idx], cmap='viridis', vmin=0, vmax=1, origin='lower'))
+
+    fig.suptitle(f"Pheromone evolution: iteration {snapshots[0][0]}")
+
+    def update(frame_index):
+        iteration, grids = snapshots[frame_index]
+        images[0].set_data(grids[0])
+        images[1].set_data(grids[1])
+        fig.suptitle(f"Pheromone evolution: iteration {iteration}")
+        return images
+
+    anim = FuncAnimation(fig, update, frames=len(snapshots), interval=800, blit=False)
+    writer = PillowWriter(fps=1)
+    anim.save(str(output_path), writer=writer)
+    plt.close(fig)
+
+
+def save_pheromone_heatmaps(pheromone_grids, output_path):
+    diff_grid = pheromone_grids[1] - pheromone_grids[0]
+    fig, axs = plt.subplots(1, 3, figsize=(18, 5))
+    titles = ["Normal class", "Abnormal class", "Abnormal - Normal"]
+    grids = [pheromone_grids[0], pheromone_grids[1], diff_grid]
+    cmaps = ['Blues', 'Reds', 'coolwarm']
+
+    for ax, grid, title, cmap in zip(axs, grids, titles, cmaps):
+        im = ax.imshow(grid, cmap=cmap, origin='lower')
+        ax.set_title(title)
+        ax.set_xticks([])
+        ax.set_yticks([])
+        fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
+
+    fig.suptitle('Final Pheromone Fields and Class Difference')
+    fig.tight_layout(rect=[0, 0, 1, 0.96])
+    fig.savefig(str(output_path), dpi=200)
+    plt.close(fig)
+
+
 # ====================== 3. Train and evaluate ======================
 grid_size = 60
-pheromone_grids = train_pheromone_classifier(X_train, y_train, grid_size=grid_size)
+pheromone_grids, pheromone_snapshots = train_pheromone_classifier(
+    X_train,
+    y_train,
+    grid_size=grid_size,
+    record_snapshots=True,
+    snapshot_interval=20,
+)
 
 train_pred, train_scores = predict_with_pheromone(X_train, pheromone_grids, grid_size=grid_size)
 test_pred, test_scores = predict_with_pheromone(X_test, pheromone_grids, grid_size=grid_size)
@@ -496,10 +559,14 @@ output_dir.mkdir(parents=True, exist_ok=True)
 pdf_path = output_dir / 'stigmergy_clustering.pdf'
 roc_pdf_path = output_dir / 'stigmergy_auroc.pdf'
 metrics_pdf_path = output_dir / 'stigmergy_metrics_comparison.pdf'
+process_gif_path = output_dir / 'stigmergy_pheromone_evolution.gif'
+pheromone_heatmap_path = output_dir / 'stigmergy_pheromone_heatmap.pdf'
 prediction_path = output_dir / 'stigmergy_predictions.xlsx'
 plot.save(filename=str(pdf_path), width=10, height=8, dpi=300)
 roc_plot.save(filename=str(roc_pdf_path), width=8, height=6, dpi=300)
 metrics_plot.save(filename=str(metrics_pdf_path), width=8, height=6, dpi=300)
+save_pheromone_animation(pheromone_snapshots, process_gif_path)
+save_pheromone_heatmaps(pheromone_grids, pheromone_heatmap_path)
 
 training_prediction_df = pd.DataFrame({
     'prediction': train_pred,
