@@ -74,7 +74,7 @@ Session log records all operations, iterations, and metrics
 ### Setup
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/Stigmergy-Arrhythmia.git
+git clone https://github.com/tammycw/Stigmergy-Arrhythmia.git
 cd Stigmergy-Arrhythmia
 
 # Install dependencies
@@ -242,7 +242,7 @@ If you use this project in research, please cite:
   author={Wang, Tammy},
   year={2026},
   publisher={GitHub},
-  howpublished={\url{https://github.com/yourusername/Stigmergy-Arrhythmia}}
+  howpublished={\url{https://github.com/tammycw/Stigmergy-Arrhythmia}}
 }
 ```
 
