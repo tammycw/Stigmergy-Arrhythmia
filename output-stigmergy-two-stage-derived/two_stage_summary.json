@@ -1,0 +1,90 @@
+{
+  "beat_class_counts": {
+    "F": 799,
+    "N": 74796,
+    "S": 2,
+    "V": 6749
+  },
+  "stage1_total_sample_sizes": {
+    "Normal": 74796,
+    "Abnormal": 7550,
+    "Total": 82346
+  },
+  "stage1_split_sample_sizes": {
+    "Train": {
+      "Normal": 37398,
+      "Abnormal": 3775,
+      "Total": 41173
+    },
+    "Test": {
+      "Normal": 37398,
+      "Abnormal": 3775,
+      "Total": 41173
+    }
+  },
+  "stage2_total_sample_sizes": {
+    "V": 6749,
+    "F": 799,
+    "S": 2
+  },
+  "stage2_classification_sample_sizes": {
+    "V": 6749,
+    "F": 799
+  },
+  "stage2_classification_total": 7548,
+  "stage2_split_sample_sizes": {
+    "Train": {
+      "V": 3374,
+      "F": 400,
+      "S": 0,
+      "Total": 3774
+    },
+    "Test": {
+      "V": 3375,
+      "F": 399,
+      "S": 0,
+      "Total": 3774
+    }
+  },
+  "binary": {
+    "training": {
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "kappa": 1.0,
+      "auroc": 1.0,
+      "confusion_matrix": "[[37398     0]\n [    0  3775]]"
+    },
+    "test": {
+      "accuracy": 0.9917664488864062,
+      "precision": 0.9809630459126539,
+      "recall": 0.9282119205298013,
+      "f1": 0.953858717844018,
+      "kappa": 0.9493424461069642,
+      "auroc": 0.9819334107536295,
+      "confusion_matrix": "[[37330    68]\n [  271  3504]]"
+    }
+  },
+  "abnormal_subtypes": {
+    "training": {
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "kappa": 1.0,
+      "auroc": 1.0,
+      "confusion_matrix": "[[3374    0]\n [   0  400]]"
+    },
+    "test": {
+      "accuracy": 0.9753577106518283,
+      "precision": 0.8984375,
+      "recall": 0.8646616541353384,
+      "f1": 0.8812260536398467,
+      "kappa": 0.8674844541098916,
+      "auroc": 0.9669332590736099,
+      "confusion_matrix": "[[3336   39]\n [  54  345]]"
+    },
+    "ignored_class": "S"
+  }
+}
