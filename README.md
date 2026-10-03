@@ -1,263 +1,165 @@
-# Stigmergy-Arrhythmia: Swarm Intelligence for Arrhythmia Classification
+# Stigmergy-Arrhythmia
 
-A bio-inspired machine learning classifier that uses **stigmergic algorithms** (termite swarm behavior) to distinguish normal from abnormal ECG heartbeats.
+A termite-inspired ECG beat classification project that compares two evaluation settings:
+
+- interpatient classification using patient-disjoint train/test records
+- intrapatient classification using a standard within-dataset split
+
+The model is built around a two-stage stigmergic pipeline: first separating Normal beats from Abnormal beats, and then distinguishing Ventricular (V) versus Fusion (F) beats in the abnormal subgroup.
 
 ## Overview
 
-This project implements a novel approach to arrhythmia classification inspired by the collective behavior of termites. Rather than using traditional supervised learning methods, we simulate a swarm of autonomous agents that communicate through pheromone deposition—a process called *stigmergy*. Over multiple iterations, the agents self-organize to create decision boundaries that separate normal and abnormal cardiac beats in a low-dimensional feature space.
+This repository contains two complementary workflows for arrhythmia classification using the MIT-BIH Arrhythmia Database:
 
-## Theory: Stigmergy & Swarm Intelligence
+- `Stigmergy-Arrhythmia-twostage-inter.py` implements the interpatient setup.
+- `Stigmergy-Arrhythmia-twostage-intra.py` implements the intrapatient setup.
 
-**Stigmergy** is an emergent behavior mechanism where individual agents communicate **indirectly** through modification of their shared environment (pheromones), rather than through direct communication. This creates self-organizing collective behavior with no central coordinator.
+Both approaches use a swarm-inspired pheromone representation, PCA-based embedding, and a KNN classifier trained on swarm-derived features. The key difference is how the data are split for evaluation.
 
-### Key Concepts
-- **Autonomous Agents**: Each termite agent operates independently with simple rules
-- **Local Interactions**: Agents sense only their immediate neighborhood
-- **Pheromone Field**: Chemical markers left by agents guide future behavior
-- **Collective Segregation**: Despite no global coordination, agents naturally cluster like with like
+## Interpatient vs. intrapatient evaluation
 
-### Biological Inspiration
-Real termites use pheromones to construct complex nests without a queen directing construction. Our model adapts this for ECG classification:
-- Normal beats (class 0) deposit pheromones in their local regions
-- Abnormal beats (class 1) deposit pheromones differently weighted (class imbalance correction)
-- Over iterations, a spatial pheromone map emerges that separates the classes
-- New beats are classified based on which pheromone field is stronger
+### 1. Interpatient workflow
 
-### Algorithm Mechanism
-1. **Initialization**: Place agents at grid positions corresponding to their 2D ECG features
-2. **Iteration**: Each timestep, agents move randomly and deposit pheromones of their class
-3. **Diffusion**: Gaussian smoothing simulates pheromone diffusion across the grid
-4. **Decay**: Pheromones evaporate over time (multiplicative decay factor)
-5. **Convergence**: After 220 iterations, pheromone maps encode class boundaries
-6. **Classification**: New samples are classified by comparing pheromone strengths at their location
+File: `Stigmergy-Arrhythmia-twostage-inter.py`
 
-## Features
+This setup follows the AAMI patient-disjoint protocol. The training and test sets are split at the record level, so beats from the same patient never appear in both partitions.
 
-**Swarm-based Classification**  
-Autonomous termite agents explore feature space and self-organize into decision boundaries
+Why it matters:
+- It better reflects real-world generalization to new patients.
+- It reduces leakage from patient-specific morphology.
+- It is the more rigorous benchmark for ECG beat classification.
 
-**Real Cardiology Data**  
-Processes MIT-BIH Arrhythmia Database from PhysioNet (46 patient records, 80,000+ beats)
+The script uses AAMI DS1 and DS2 records to enforce this separation and is designed for a patient-level generalization test.
 
-**Dimensionality Reduction**  
-PCA projects 180-dimensional ECG signals to 2D for visualization and computation
+### 2. Intrapatient workflow
 
-**Comprehensive Evaluation**  
-- Accuracy, Precision, Recall, F1-score
-- Cohen's Kappa (inter-rater agreement)
-- AUROC with ROC curves for train/test splits
-- Confusion matrix analysis
+File: `Stigmergy-Arrhythmia-twostage-intra.py`
 
-**Publication-Ready Visualizations**  
-- Scatter plots of predicted vs. actual classes in PCA space
-- ROC curves with AUROC annotations
-- Metrics comparison bar charts
-- All plots generated with plotnine (ggplot2-style grammar of graphics)
+This setup uses a train/test split without enforcing patient-disjoint records. It is useful for exploratory experiments and internal comparisons, but it is usually less strict than the interpatient setup because information from the same patient can appear in both train and test folds.
 
-**Data Caching**  
-First run downloads from PhysioNet; subsequent runs use cached Excel file for speed
+This variant is still valuable for understanding model behavior and for comparing raw-vs-derived feature pipelines.
 
-**Detailed Logging**  
-Session log records all operations, iterations, and metrics
+## Two-stage classification
+
+Both scripts use a staged class hierarchy:
+
+### Stage 1: Normal vs. Abnormal
+
+- Train a binary classifier to separate Normal (N) beats from abnormal beats.
+- The abnormal group includes V, F, and S beats.
+- The learned pheromone field and swarm descriptors are used to predict whether each beat is normal or abnormal.
+
+### Stage 2: Abnormal subtype classification
+
+- Keep only the abnormal beats that are feasible for subtype modeling.
+- Train a second classifier to distinguish Ventricular (V) beats from Fusion (F) beats.
+- Supraventricular (S) beats are intentionally excluded from this stage because their sample count is too low for a stable subtype model.
+
+This keeps the broad diagnosis separate from the more focused subtype decision and makes the overall pipeline more interpretable.
+
+## Why the swarm formulation is useful
+
+The project models ECG beats as autonomous termite-like agents that deposit class-specific pheromone patterns in a 2D lattice. Over time, local interactions create a collective spatial field that reflects class structure. The final classifier is then trained on summary statistics derived from this pheromone neighborhood rather than using only raw feature values directly.
+
+The design goals are:
+- class separation via local swarm dynamics
+- explicit spatial interpretation of learned class structure
+- robustness to class imbalance
+- a modular two-stage architecture for binary and subtype decision making
+
+## Repository structure
+
+```text
+Stigmergy-Arrhythmia/
+├── README.md
+├── Stigmergy_download_wfdb_to_excel.py
+├── Stigmergy_compute_derived_features.py
+├── Stigmergy-Arrhythmia-twostage-inter.py
+├── Stigmergy-Arrhythmia-twostage-intra.py
+├── input/
+│   └── ... dataset files
+├── module_analysis/
+│   └── ... analysis utilities
+├── output-stigmergy-twostage-interpatient-derived/
+├── output-stigmergy-twostage-interpatient-raw/
+├── output-stigmergy-twostage-intrapatient-derived/
+├── output-stigmergy-twostage-intrapatient-raw/
+└── ...
+```
+
+## Data preparation
+
+The project expects ECG data stored in Excel workbooks generated from MIT-BIH data.
+
+Typical workflow:
+
+1. Download PhysioNet ECG records.
+2. Build feature tables and metadata.
+3. Filter low-quality RR rows when applicable.
+4. Run either the interpatient or intrapatient pipeline.
+5. Save metrics, counts, plots, and predictions to the output folder.
+
+## Run the workflows
+
+### Interpatient run
+
+```bash
+python Stigmergy-Arrhythmia-twostage-inter.py
+```
+
+### Intrapatient run
+
+```bash
+python Stigmergy-Arrhythmia-twostage-intra.py
+```
+
+## Typical outputs
+
+The scripts generate:
+
+- class-count summaries
+- AAMI filtered partitions for the interpatient workflow
+- confusion matrices
+- ROC curves and metric plots
+- heatmaps and pheromone evolution output
+- Excel files with predictions
+- JSON summaries of performance and class distributions
+
+## Practical interpretation
+
+- Use the interpatient workflow when you want a realistic and conservative patient-generalization benchmark.
+- Use the intrapatient workflow for exploratory analysis or quick model comparisons.
+- Report the interpatient result as the primary benchmark when comparing to clinical deployment settings.
 
 ## Installation
 
-### Requirements
-- Python 3.8+
-- scikit-learn
-- pandas
-- numpy
-- scipy
-- plotnine
-- wfdb (for PhysioNet data access)
+Requirements are approximately:
 
-### Setup
 ```bash
-# Clone the repository
-git clone https://github.com/yourusername/Stigmergy-Arrhythmia.git
-cd Stigmergy-Arrhythmia
-
-# Install dependencies
-pip install -r requirements.txt
+pip install numpy pandas scikit-learn scipy wfdb plotnine openpyxl
 ```
 
-### Requirements File
-Create `requirements.txt`:
-```
-numpy>=1.21.0
-pandas>=1.3.0
-scikit-learn>=0.24.0
-scipy>=1.7.0
-wfdb>=3.3.0
-plotnine>=0.9.0
-```
+## Scientific context
 
-## Usage
+This work is inspired by stigmergic colony behavior, where local interactions produce global structure without a central controller. In the ECG setting, the swarm acts as a learned spatial representation of class-specific beat organization, and the final decisions are made using the emergent pheromone landscape rather than a purely direct threshold-based rule.
 
-### Basic Run
-```bash
-python Stigmergy-Arrhythmia.py
-```
+## Notes
 
-### Configuration
-Edit the following parameters in the script:
-
-```python
-# Data source: "database" or "excel"
-data_source = "database"  # First run: download from MIT-BIH
-# data_source = "excel"   # Subsequent runs: use cached data
-
-# Maximum samples to load
-max_samples = 12000
-
-# Grid resolution for swarm simulation
-grid_size = 60
-
-# Number of training iterations
-n_iterations = 220
-```
-
-## Outputs
-
-The script generates:
-
-1. **stigmergy_clustering.pdf**  
-   Scatter plot of test set with predicted vs. actual labels in PCA space
-
-2. **stigmergy_auroc.pdf**  
-   ROC curves comparing training and testing AUROC
-
-3. **stigmergy_metrics_comparison.pdf**  
-   Bar chart comparing all metrics across train/test splits
-
-4. **stigmergy_predictions.xlsx**  
-   Excel file with training and testing predictions for further analysis
-
-5. **stigmergy_run.log**  
-   Detailed log including:
-   - Data loading summary
-   - Swarm iteration progress
-   - All performance metrics
-   - File save confirmations
-
-
-## Project Structure
-
-```
-Stigmergy-Arrhythmia/
-├── Stigmergy-Arrhythmia.py       # Main script
-├── README.md                      # This file
-├── requirements.txt               # Python dependencies
-├── mitbih_data.xlsx              # Cached data (auto-generated)
-├── stigmergy_clustering.pdf       # Output: classification plot
-├── stigmergy_auroc.pdf           # Output: ROC curves
-├── stigmergy_metrics_comparison.pdf # Output: metrics comparison
-├── stigmergy_predictions.xlsx    # Output: predictions
-└── stigmergy_run.log             # Output: session log
-```
-
-## How the Swarm Works: Step-by-Step
-
-### 1. **Agent Initialization**
-```
-For each ECG beat in training data:
-  - Create a TermiteAgent
-  - Position on grid based on 2D PCA coordinates
-  - Assign class label (0=Normal, 1=Abnormal)
-```
-
-### 2. **Random Walk Movement**
-```
-Each iteration:
-  - Each agent moves randomly: dx, dy ∈ {-1, 0, +1}
-  - Position clipped to grid boundaries [0, grid_size-1]
-```
-
-### 3. **Pheromone Deposition**
-```
-At each position visited:
-  - Deposit pheromone strength = 0.6 × class_weight
-  - class_weight handles imbalanced datasets
-  - Normal class weight = 1.0
-  - Abnormal class weight = (count_normal / count_abnormal)
-```
-
-### 4. **Pheromone Diffusion & Decay**
-```
-After all agents move:
-  - Apply Gaussian filter (σ=0.8) to simulate diffusion
-  - Multiply by decay factor (0.995) to simulate evaporation
-  - Result: sharp peaks at class centers, gradual falloff
-```
-
-### 5. **Classification**
-```
-For each test sample at position P:
-  - Query normal pheromone at P: φ_normal(P)
-  - Query abnormal pheromone at P: φ_abnormal(P)
-  - Score difference: Δ = φ_abnormal(P) - φ_normal(P)
-  - Classify as abnormal if Δ > 0.05, else normal
-```
-
-## Key Implementation Details
-
-- **Grid Size**: 60×60 provides good resolution for the MIT-BIH data
-- **Iterations**: 220 iterations balances convergence with computation time
-- **Gaussian Sigma**: 0.8 provides smooth diffusion without over-blurring
-- **Decay Factor**: 0.995 per iteration gives stable pheromone landscapes
-- **Class Imbalance Handling**: Weighted deposition accounts for unequal class sizes
-- **Normalization**: MinMax scaling on test data during projection ensures consistent grid mapping
-
-## Scientific Background
-
-This work is inspired by:
-- **Termite Mound Construction**: Décamps & Theraulaz (1990) on stigmergic coordination
-- **Swarm Robotics**: Dorigo & Birattari (2007) on collective intelligence
-- **Ant Colony Optimization**: Dorigo et al. (2006) for combinatorial optimization
-- **Self-Organizing Maps**: Kohonen (1990) for unsupervised clustering
-
-## Limitations & Future Work
-
-### Current Limitations
-- Binary classification only (normal vs. abnormal)
-- Grid discretization may lose fine feature details
-- Performance depends on PCA to 2D (may not capture all information)
-- Random walk is simple; could benefit from directed movement based on pheromone gradients
-
-### Future Enhancements
-- Multi-class extension (normal, VEB, SVB, fusion beats)
-- Adaptive pheromone deposition based on classification confidence
-- 3D or higher-dimensional agent space
-- Comparison with standard ML baselines (SVM, Random Forest, Neural Networks)
-- Temporal information (beat-to-beat intervals) integration
-- Real-time prediction on streaming ECG data
+- The project is designed around MIT-BIH arrhythmia data and AAMI beat labels.
+- Stage 2 intentionally excludes S beats to avoid unstable subtype training from underrepresented data.
+- Output folders are separated by dataset choice and evaluation protocol to keep results organized and reproducible.
 
 ## Citation
 
-If you use this project in research, please cite:
-
-```bibtex
-@misc{wang2026stigmergy,
-  title={Stigmergy-Arrhythmia: Swarm Intelligence for ECG Beat Classification},
-  author={Wang, Tammy},
-  year={2026},
-  publisher={GitHub},
-  howpublished={\url{https://github.com/yourusername/Stigmergy-Arrhythmia}}
-}
-```
-
-## License
-
-MIT License - See LICENSE file for details
+If you use this work in a project or paper, cite the repository and clearly state which protocol was used: interpatient or intrapatient.
 
 ## Author
 
-**Tammy Wang**  
-Email: tammycc.wang@gmail.com  
-Institution: OSSM (Oklahoma School of Science and Mathematics)  
-Date: June 2026
+Tammy Wang
 
-## Acknowledgments
+Email: tammycc.wang@gmail.com
+
+Oklahoma School of Science and Mathematics (OSSM)
 
 - MIT-BIH Arrhythmia Database from PhysioNet
 - scikit-learn and pandas communities
