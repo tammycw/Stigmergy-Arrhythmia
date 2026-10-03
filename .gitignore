@@ -1,0 +1,9 @@
+.DS_Store
+output-stigmergy-twostage-interpatient-derived/stage1_predictor_matrix.xlsx
+output-stigmergy-twostage-interpatient-derived/stage2_predictor_matrix.xlsx
+output-stigmergy-twostage-interpatient-raw/stage1_predictor_matrix.xlsx
+output-stigmergy-twostage-interpatient-raw/stage2_predictor_matrix.xlsx
+output-stigmergy-twostage-intrapatient-raw/stage1_predictor_matrix.xlsx
+output-stigmergy-twostage-intrapatient-raw/stage2_predictor_matrix.xlsx
+output-stigmergy-twostage-intrapatient-derived/stage1_predictor_matrix.xlsx
+output-stigmergy-twostage-intrapatient-derived/stage2_predictor_matrix.xlsx

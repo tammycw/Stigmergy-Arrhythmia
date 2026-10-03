@@ -1,0 +1,105 @@
+Current directory: /Users/twang/tcw/Stigmergy-update2
+Dataset split preset: 50_50 | train=0.50, test=0.50
+Loading derived dataset from /Users/twang/tcw/Stigmergy-update2/input/derived_waveform_features.xlsx
+Derived dataset filter: kept 82346 rows and dropped 396 rows where rr_problem_flag != 'ok'
+Loaded derived dataset with shape (82346, 42)
+Beat classes available: ['F', 'N', 'S', 'V']
+Beat class counts: {'F': 799, 'N': 74796, 'S': 2, 'V': 6749}
+TIMER [data_loading]: 28.193 seconds
+Stage 1 total sample sizes: {'Normal': 74796, 'Abnormal': 7550, 'Total': 82346}
+Feature drift filter retained 31/42 features (keep_fraction=0.75, threshold=0.0284)
+Data shape: (82346, 31) | Standardized feature space: (82346, 31) | Reduced visualization: (82346, 2)
+TIMER [preprocessing]: 0.033 seconds
+Stage 1 Train/Test category sample sizes: {'Train': {'Normal': 37398, 'Abnormal': 3775, 'Total': 41173}, 'Test': {'Normal': 37398, 'Abnormal': 3775, 'Total': 41173}}
+Start Stage 1 model training: Normal vs Abnormal...
+Running termite-inspired stigmergy training...
+Iter   0 | Normal pheromone: 12.2421 | Abnormal pheromone: 12.2416
+Iter  50 | Normal pheromone: 410.5819 | Abnormal pheromone: 410.7870
+Iter 100 | Normal pheromone: 571.1790 | Abnormal pheromone: 571.4970
+Iter 150 | Normal pheromone: 635.9271 | Abnormal pheromone: 636.3010
+Iter 200 | Normal pheromone: 662.0336 | Abnormal pheromone: 662.4333
+Iter 250 | Normal pheromone: 672.5607 | Abnormal pheromone: 672.9712
+Saved predictor matrices to /Users/twang/tcw/Stigmergy-update2/output-stigmergy-twostage-intrapatient-derived/stage1_predictor_matrix.xlsx
+TIMER [model_training]: 743.624 seconds
+
+=== Training Metrics ===
+Accuracy: 1.000
+Precision (abnormal class): 1.000
+Recall (abnormal class): 1.000
+F1-score (abnormal class): 1.000
+Cohen's Kappa: 1.000
+AUROC: 1.000
+Confusion Matrix:
+[[37398     0]
+ [    0  3775]]
+
+=== Testing Metrics ===
+Accuracy: 0.990
+Precision (abnormal class): 0.969
+Recall (abnormal class): 0.919
+F1-score (abnormal class): 0.943
+Cohen's Kappa: 0.938
+AUROC: 0.982
+Confusion Matrix:
+[[37287   111]
+ [  307  3468]]
+
+=== Training vs Testing Summary ===
+accuracy: training=1.000, testing=0.990
+precision: training=1.000, testing=0.969
+recall: training=1.000, testing=0.919
+f1: training=1.000, testing=0.943
+kappa: training=1.000, testing=0.938
+auroc: training=1.000, testing=0.982
+Saved visualization to /Users/twang/tcw/Stigmergy-update2/output-stigmergy-twostage-intrapatient-derived/stigmergy_clustering.pdf
+Saved AUROC plot to /Users/twang/tcw/Stigmergy-update2/output-stigmergy-twostage-intrapatient-derived/stigmergy_auroc.pdf
+Saved metrics comparison plot to /Users/twang/tcw/Stigmergy-update2/output-stigmergy-twostage-intrapatient-derived/stigmergy_metrics_comparison.pdf
+Saved precision-recall plot to /Users/twang/tcw/Stigmergy-update2/output-stigmergy-twostage-intrapatient-derived/stigmergy_precision_recall.pdf
+Saved swarm-feature distribution figure to /Users/twang/tcw/Stigmergy-update2/output-stigmergy-twostage-intrapatient-derived/stigmergy_swarm_feature_distribution.pdf
+Saved confusion matrix figure to /Users/twang/tcw/Stigmergy-update2/output-stigmergy-twostage-intrapatient-derived/stigmergy_confusion_matrices.pdf
+Saved predictions to /Users/twang/tcw/Stigmergy-update2/output-stigmergy-twostage-intrapatient-derived/stigmergy_predictions.xlsx
+
+Start Stage 2 model training: Abnormal subtype V vs F...
+Stage 2 total sample sizes: {'V': 6749, 'F': 799, 'S': 2}
+Stage 2 total sample sizes for classification: {'V': 6749, 'F': 799} (Total V + F: 7548)
+Ignoring 2 S beats in Stage 2 subtype training.
+Stage 2 Train/Test category sample sizes: {'Train': {'V': 3374, 'F': 400, 'S': 0, 'Total': 3774}, 'Test': {'V': 3375, 'F': 399, 'S': 0, 'Total': 3774}}
+Running termite-inspired stigmergy training...
+Iter   0 | Normal pheromone: 1.1044 | Abnormal pheromone: 1.1044
+Iter  50 | Normal pheromone: 37.0587 | Abnormal pheromone: 37.0600
+Iter 100 | Normal pheromone: 51.5571 | Abnormal pheromone: 51.5592
+Iter 150 | Normal pheromone: 57.4036 | Abnormal pheromone: 57.4061
+Iter 200 | Normal pheromone: 59.7612 | Abnormal pheromone: 59.7638
+Iter 250 | Normal pheromone: 60.7119 | Abnormal pheromone: 60.7145
+Saved predictor matrices to /Users/twang/tcw/Stigmergy-update2/output-stigmergy-twostage-intrapatient-derived/stage2_predictor_matrix.xlsx
+
+=== Stage 2 Training (V vs F) Metrics ===
+Accuracy: 1.000
+Precision (abnormal class): 1.000
+Recall (abnormal class): 1.000
+F1-score (abnormal class): 1.000
+Cohen's Kappa: 1.000
+AUROC: 1.000
+Confusion Matrix:
+[[3374    0]
+ [   0  400]]
+
+=== Stage 2 Testing (V vs F) Metrics ===
+Accuracy: 0.974
+Precision (abnormal class): 0.873
+Recall (abnormal class): 0.880
+F1-score (abnormal class): 0.876
+Cohen's Kappa: 0.862
+AUROC: 0.972
+Confusion Matrix:
+[[3324   51]
+ [  48  351]]
+Saved abnormal subtype metrics comparison plot to /Users/twang/tcw/Stigmergy-update2/output-stigmergy-twostage-intrapatient-derived/abnormal_subtype_metrics_comparison.pdf
+Saved Stage 2 subtype metrics and predictions.
+TIMER [overall]: 851.276 seconds
+
+=== Timing Summary ===
+overall: 851.276 seconds
+data_loading: 28.193 seconds
+preprocessing: 0.033 seconds
+model_training: 743.624 seconds

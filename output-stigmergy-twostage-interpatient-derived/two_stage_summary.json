@@ -1,0 +1,136 @@
+{
+  "handle_class_imbalance": false,
+  "max_minority_oversampling_ratio": 1.5,
+  "beat_class_counts": {
+    "F": 799,
+    "N": 74796,
+    "S": 2,
+    "V": 6749
+  },
+  "aami_filtered_partitions": {
+    "DS1_train": [
+      101,
+      106,
+      108,
+      112,
+      114,
+      115,
+      116,
+      119,
+      122,
+      124,
+      201,
+      203,
+      205,
+      207,
+      208,
+      209,
+      215,
+      220,
+      223,
+      230
+    ],
+    "DS2_test": [
+      100,
+      103,
+      105,
+      113,
+      117,
+      121,
+      123,
+      200,
+      202,
+      210,
+      212,
+      213,
+      219,
+      221,
+      222,
+      228,
+      231,
+      234
+    ]
+  },
+  "stage1_total_sample_sizes": {
+    "Normal": 74796,
+    "Abnormal": 7550,
+    "Total": 82346
+  },
+  "stage1_split_sample_sizes": {
+    "Train": {
+      "Normal": 38060,
+      "Abnormal": 4038,
+      "Total": 42098
+    },
+    "Test": {
+      "Normal": 34168,
+      "Abnormal": 2507,
+      "Total": 36675
+    }
+  },
+  "stage2_total_sample_sizes": {
+    "V": 6749,
+    "F": 799,
+    "S": 2
+  },
+  "stage2_classification_sample_sizes": {
+    "V": 6749,
+    "F": 799
+  },
+  "stage2_classification_total": 7548,
+  "stage2_split_sample_sizes": {
+    "Train": {
+      "V": 3624,
+      "F": 412,
+      "S": 0,
+      "Total": 4036
+    },
+    "Test": {
+      "V": 2131,
+      "F": 376,
+      "S": 0,
+      "Total": 2507
+    }
+  },
+  "binary": {
+    "training": {
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "kappa": 1.0,
+      "auroc": 1.0,
+      "confusion_matrix": "[[38060     0]\n [    0  4038]]"
+    },
+    "test": {
+      "accuracy": 0.979850034083163,
+      "precision": 0.8628899835796388,
+      "recall": 0.8384523334662943,
+      "f1": 0.8504956504147279,
+      "kappa": 0.8396950522764712,
+      "auroc": 0.9460154683253083,
+      "confusion_matrix": "[[33834   334]\n [  405  2102]]"
+    }
+  },
+  "abnormal_subtypes": {
+    "training": {
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "kappa": 1.0,
+      "auroc": 1.0,
+      "confusion_matrix": "[[3624    0]\n [   0  412]]"
+    },
+    "test": {
+      "accuracy": 0.9309932189868368,
+      "precision": 0.8029850746268656,
+      "recall": 0.7154255319148937,
+      "f1": 0.7566807313642757,
+      "kappa": 0.716631918968062,
+      "auroc": 0.8942784827820321,
+      "confusion_matrix": "[[2065   66]\n [ 107  269]]"
+    },
+    "ignored_class": "S"
+  }
+}

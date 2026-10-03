@@ -37,7 +37,7 @@ Real termites use pheromones to construct complex nests without a queen directin
 Autonomous termite agents explore feature space and self-organize into decision boundaries
 
 **Real Cardiology Data**  
-Processes MIT-BIH Arrhythmia Database from PhysioNet (46 patient records, 12,000+ beats)
+Processes MIT-BIH Arrhythmia Database from PhysioNet (46 patient records, 80,000+ beats)
 
 **Dimensionality Reduction**  
 PCA projects 180-dimensional ECG signals to 2D for visualization and computation

@@ -1,0 +1,21 @@
+{
+  "training": {
+    "accuracy": 1.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "kappa": 1.0,
+    "auroc": 1.0,
+    "confusion_matrix": "[[3624    0]\n [   0  412]]"
+  },
+  "test": {
+    "accuracy": 0.9309932189868368,
+    "precision": 0.8029850746268656,
+    "recall": 0.7154255319148937,
+    "f1": 0.7566807313642757,
+    "kappa": 0.716631918968062,
+    "auroc": 0.8942784827820321,
+    "confusion_matrix": "[[2065   66]\n [ 107  269]]"
+  },
+  "ignored_class": "S"
+}
